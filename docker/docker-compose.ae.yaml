@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  lemon-ae:
+    image: lemon-ae:latest
+    build: 
+      context: ..
+      dockerfile: docker/Dockerfile.ae
+    volumes:
+      - ..:/app/
+      - ./put-gurobi-license-here/gurobi.lic:/opt/gurobi/gurobi.lic:ro
+    stdin_open: true
+    tty: true
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              count: 1
+              capabilities: [gpu]
+    command: bash -c "cd /app && pip install -e . && bash"

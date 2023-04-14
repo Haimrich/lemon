@@ -1,0 +1,93 @@
+FROM nvidia/cuda:11.8.0-runtime-ubuntu22.04
+
+ENV DEBIAN_FRONTEND=noninteractive 
+ENV PIP_ROOT_USER_ACTION=ignore
+
+COPY patches /setup/patches
+
+# Dependencies
+
+RUN apt-get update
+RUN apt-get install -y git build-essential cmake scons ninja-build
+RUN apt-get install -y libboost-all-dev libconfig++-dev libyaml-cpp-dev
+RUN apt-get install -y python3-pip python-is-python3 
+RUN apt-get install -y fonts-linuxlibertine
+RUN apt-get install -y libncurses-dev libtinfo-dev libgpm-dev
+
+# Accelergy
+
+WORKDIR /setup/accelergy
+RUN git clone https://github.com/HewlettPackard/cacti.git
+RUN git clone https://github.com/Accelergy-Project/accelergy.git
+RUN git clone https://github.com/Accelergy-Project/accelergy-aladdin-plug-in.git
+RUN git clone https://github.com/Accelergy-Project/accelergy-cacti-plug-in.git
+RUN git clone https://github.com/Accelergy-Project/accelergy-table-based-plug-ins.git
+RUN cd cacti && make -j4
+RUN cd accelergy && pip3 install .
+RUN cd accelergy-aladdin-plug-in/ && pip3 install .
+RUN cd accelergy-cacti-plug-in/ && pip3 install .
+RUN cp -r cacti /usr/local/share/accelergy/estimation_plug_ins/accelergy-cacti-plug-in/
+RUN cd accelergy-table-based-plug-ins/ && pip3 install .
+
+RUN accelergy
+RUN accelergyTables
+
+# Python Dependencies
+
+RUN pip install --upgrade pip
+RUN pip install gurobipy==10.0.1
+RUN pip install hatch pandas numpy PyYAML 
+RUN pip install matplotlib seaborn
+RUN pip install jupyterlab notebook ipykernel
+
+# Timeloop
+
+WORKDIR /setup
+RUN git clone https://github.com/NVlabs/timeloop.git
+WORKDIR /setup/timeloop
+RUN git reset --hard 905ba953432c812772de935d57fd0a674a89d3c1
+RUN cp -r pat-public/src/pat src/
+RUN scons --static --accelergy -j6
+RUN cp build/timeloop-* /usr/local/bin
+
+# MindMappings
+
+WORKDIR /setup
+RUN pip install torch torchvision torchaudio scipy
+RUN git clone https://github.com/kartik-hegde/mindmappings.git
+WORKDIR /setup/mindmappings
+RUN git reset --hard e96f2a287da2a93c4af0794a3bab1211bc95ba0a
+RUN git apply /setup/patches/mindmappings.patch
+RUN pip install -e .
+
+# GAMMA
+
+WORKDIR /setup
+RUN git clone https://github.com/Accelergy-Project/timeloop-python.git
+WORKDIR /setup/timeloop-python
+RUN git reset --hard b5885615eeddfc249758d003a99c6854884a94b9
+RUN git submodule update --init
+RUN git apply /setup/patches/pytimeloop.patch
+WORKDIR /setup/timeloop-python/lib/timeloop
+RUN cp -r pat-public/src/pat src/
+RUN rm -rf build
+RUN scons -j6 --accelergy
+WORKDIR /setup/timeloop-python
+RUN rm -rf build
+RUN pip install .
+
+WORKDIR /setup
+RUN git clone https://github.com/maestro-project/gamma-timeloop.git
+WORKDIR /setup/gamma-timeloop
+RUN git reset --hard 7174c8ef8d81478ce655b4b229ce1244f57a6774
+
+# CoSA
+
+WORKDIR /setup
+RUN git clone https://github.com/ucb-bar/cosa.git
+WORKDIR /setup/cosa
+RUN git reset --hard 23b48a3f022f5099de37ed829529e26208f05366
+RUN git apply /setup/patches/cosa.patch
+RUN pip install .
+
+WORKDIR /app

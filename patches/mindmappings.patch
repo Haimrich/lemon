@@ -1,0 +1,82 @@
+diff --git a/mindmappings/costModel/timeloop/model_cnn.py b/mindmappings/costModel/timeloop/model_cnn.py
+index f74bd2b..f7b394b 100644
+--- a/mindmappings/costModel/timeloop/model_cnn.py
++++ b/mindmappings/costModel/timeloop/model_cnn.py
+@@ -234,6 +234,8 @@ class Model_CNN(Timeloop):
+         """
+         with open(PATH, 'r') as f:
+             data=f.readlines()
++            #for i, line in enumerate(data):
++            #    print(i, line)
+ 
+         energy_IDs = [2,5, 8, 11,14,17,20,23,26]
+         energy_count = 0
+@@ -247,9 +249,9 @@ class Model_CNN(Timeloop):
+                     cost.append(float(data[idx].split(" ")[-2]))
+                 elif(energy_count > 62):
+                     break
++        cost.append(float(data[-22].split(" ")[-1]))
++        cost.append(float(data[-23].split(" ")[-2]))
+         cost.append(float(data[-24].split(" ")[-1]))
+-        cost.append(float(data[-22].split(" ")[-2]))
+-        cost.append(float(data[-23].split(" ")[-1]))
+ 
+         return cost
+ 
+diff --git a/mindmappings/costModel/timeloop/timeloop.py b/mindmappings/costModel/timeloop/timeloop.py
+index 70f8f3c..5aefaf3 100644
+--- a/mindmappings/costModel/timeloop/timeloop.py
++++ b/mindmappings/costModel/timeloop/timeloop.py
+@@ -40,8 +40,7 @@ class Timeloop:
+ 
+         # Append the threadID to create a unique directory
+         out_dir =  self.parameters.OUTPUT_DIR_BASE + unique_ID
+-        if(not os.path.exists(out_dir)):
+-            os.mkdir(out_dir)
++        os.makedirs(out_dir, exist_ok=True)
+         cfg_out = out_dir + '/arch.yaml', out_dir + '/map.yaml', out_dir + '/prob.yaml', out_dir + '/model.yaml'
+ 
+         return out_dir, cfg_out, os.path.join(out_dir, str(unique_ID)+ self.parameters.OUTPUT_FILE)
+@@ -258,7 +257,7 @@ class Timeloop:
+ 
+         # Remove the temp directory
+         # print(OUTPUT_DIR)
+-        shutil.rmtree(OUTPUT_DIR)
++        #shutil.rmtree(OUTPUT_DIR)
+ 
+         return cost, success
+ 
+diff --git a/mindmappings/optimize.py b/mindmappings/optimize.py
+index 074bdc6..c677336 100644
+--- a/mindmappings/optimize.py
++++ b/mindmappings/optimize.py
+@@ -151,6 +151,7 @@ if __name__ == "__main__":
+     parser.add_argument("-p", "--path", help="Path to store results in", default=None)
+     parser.add_argument("--avg_runs", help="Number of average runs", default=1, type=int)
+     parser.add_argument("--maxsteps", help="Number of steps", default=10, type=int)
++    parser.add_argument("-o", "--output", help="Output dir", default=None)
+     args = parser.parse_args()
+ 
+     # Run
+diff --git a/mindmappings/parameters.py b/mindmappings/parameters.py
+index b9cb386..5dc8fe9 100644
+--- a/mindmappings/parameters.py
++++ b/mindmappings/parameters.py
+@@ -17,7 +17,7 @@ class Parameters:
+ 
+         # Set a scratch path to write temporary files.
+         # Tip: Use a fast memory to speed-up runs.
+-        self.SCRATCH = None # SETME
++        self.SCRATCH = '/app/evaluation/vs_mindmappings/tmp/' # SETME
+ 
+         # Sets the cost metric
+         self.COST_METRIC = metric #'energy'/'perf'/'EDP'
+@@ -76,7 +76,7 @@ class Parameters:
+         #####################################################################
+ 
+         # Path to executable: Install timeloop and point to the timeloop directory.
+-        self.TIMELOOP_PATH = None #SETME
++        self.TIMELOOP_PATH = '/setup/timeloop' #SETME
+ 
+         # Executable (timeloop-model)
+         self.COSTMODEL_EXECUTABLE =  os.path.join(self.TIMELOOP_PATH ,'build/timeloop-model')

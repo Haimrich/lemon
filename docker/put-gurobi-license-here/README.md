@@ -1,0 +1,1 @@
+Put the Gurobi `license.lic` file in this directory if you are using the Docker setup.

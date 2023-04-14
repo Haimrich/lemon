@@ -1,0 +1,112 @@
+diff --git a/pyproject.toml b/pyproject.toml
+index b19f672..932f09f 100644
+--- a/pyproject.toml
++++ b/pyproject.toml
+@@ -16,7 +16,7 @@ packages = [
+ python = "^3.8"
+ numpy = "^1.22.3"
+ PyYAML = "^6.0"
+-gurobipy = "^9.5.1"
++gurobipy = "^10.0.1"
+ 
+ [tool.poetry.dev-dependencies]
+ 
+diff --git a/src/cosa/cosa.py b/src/cosa/cosa.py
+index efdc75d..9d162d0 100644
+--- a/src/cosa/cosa.py
++++ b/src/cosa/cosa.py
+@@ -13,7 +13,7 @@ from gurobipy import *
+ 
+ logger = logging.getLogger()
+ logger.setLevel(logging.DEBUG)  # capture everything
+-logger.disabled = True
++logger.disabled = False
+ 
+ try:
+     _COSA_DIR = os.path.expanduser(os.environ['COSA_DIR'])
+diff --git a/src/cosa/cosa_input_objs.py b/src/cosa/cosa_input_objs.py
+index 96f80e5..ceae535 100644
+--- a/src/cosa/cosa_input_objs.py
++++ b/src/cosa/cosa_input_objs.py
+@@ -139,7 +139,7 @@ class Arch(object):
+             self.pe_buf = arch_dict['architecture']['subtree'][0]['subtree'][0]['subtree'][0]['local']
+             idx = 0
+             for i, mem in enumerate(self.pe_buf[::-1]):
+-                if mem['class'] == 'SRAM' or mem['class'] == 'regfile':
++                if mem['class'] in ['DRAM','SRAM','regfile','storage']:
+                     self.mem_idx[mem['name']] = idx
+                     self.mem_name[idx] = mem['name']
+                     self.mem_instances.append(mem['attributes']['instances'])
+diff --git a/src/cosa/parse_workload.py b/src/cosa/parse_workload.py
+index 9d401b2..c2ca49a 100644
+--- a/src/cosa/parse_workload.py
++++ b/src/cosa/parse_workload.py
+@@ -7,7 +7,7 @@ import re
+ import xml.etree.ElementTree as ET
+ 
+ import numpy as np
+-import cosa.utils
++import cosa.utils as utils
+ from cosa.utils import OrderedDefaultdict
+ 
+ logger = logging.getLogger(__name__)
+diff --git a/src/cosa/run_config.py b/src/cosa/run_config.py
+index 52234a1..aa83d75 100644
+--- a/src/cosa/run_config.py
++++ b/src/cosa/run_config.py
+@@ -2,7 +2,7 @@ import logging
+ import pathlib
+ import shutil
+ 
+-import cosa.utils
++from cosa import utils
+ from cosa.parse_workload import *
+ 
+ logger = logging.getLogger(__name__)
+@@ -61,6 +61,7 @@ def run_config(mapspace, spatial_config, perm_config, factor_config, status_dict
+     output_base = pathlib.Path(output_path).resolve()
+     output_dir = output_base / mapspace.arch.config_str() / mapspace.prob.config_str() / mapspace.config_str()[0] / \
+                  mapspace.config_str()[1]
++    output_dir = output_base
+     # print(output_dir)
+ 
+     status_dict[status_dict_key]['output_dir'] = str(output_dir)
+@@ -76,6 +77,8 @@ def run_config(mapspace, spatial_config, perm_config, factor_config, status_dict
+     stats_file = output_dir / "{}.summary.json".format(prefix)
+     status_dict_file = output_dir / "{}.dict.json".format(prefix)
+ 
++    components_dir = mapspace.arch.path.parent / 'components'
++
+     # logging.debug("status_dict_before: {}".format(status_dict[status_dict_key]))
+     # generate map 
+     if run_gen_map:
+@@ -85,7 +88,7 @@ def run_config(mapspace, spatial_config, perm_config, factor_config, status_dict
+         elif not xml_file.exists():
+             # logging.info("Run Generate Mapping")
+             utils.store_yaml(map_path, mapping)
+-            success = utils.run_timeloop(mapspace.arch.path, mapspace.prob.path, map_path, cwd=output_dir)
++            success = utils.run_timeloop(mapspace.arch.path, components_dir, mapspace.prob.path, map_path, cwd=output_dir)
+ 
+             # if passes timeloop check
+             if not success:
+diff --git a/src/cosa/utils.py b/src/cosa/utils.py
+index de54d01..7933851 100644
+--- a/src/cosa/utils.py
++++ b/src/cosa/utils.py
+@@ -143,10 +143,13 @@ def run_sim(prefix, stdout=None, stderr=None, timeout=None, exe='sim_test', nb=F
+         return False
+ 
+ 
+-def run_timeloop(arch, prob, mapp, cwd=os.getcwd(), stdout=None, stderr=None):
++def run_timeloop(arch, components, prob, mapp, cwd=os.getcwd(), stdout=None, stderr=None):
++    cmd = ['timeloop-model', str(arch), str(prob), str(mapp)]
++    if components.exists():
++        cmd.append(str(components) + '/*.yaml')
++
+     try:
+-        p = subprocess.check_call(['timeloop-model', str(arch), str(prob), str(mapp)], \
+-                                  cwd=cwd, stdout=stdout, stderr=stderr)
++        p = subprocess.check_call(cmd, cwd=cwd, stdout=stdout, stderr=stderr)
+         logger.info('run_timeloop> timeloop-model {} {} {}'.format(arch, prob, mapp))
+         return True
+     except:

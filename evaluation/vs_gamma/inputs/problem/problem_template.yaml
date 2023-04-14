@@ -1,0 +1,59 @@
+problem:
+  instance:
+    N: {n}
+    C: {c}
+    M: {m}
+    R: {r}
+    S: {s}
+    P: {p}
+    Q: {q}
+    Wstride: {Wstride}
+    Hstride: {Hstride}
+    Wdilation: {Wdilation}
+    Hdilation: {Hdilation}
+
+  shape:
+    coefficients:
+    - default: 1
+      name: Wstride
+    - default: 1
+      name: Hstride
+    - default: 1
+      name: Wdilation
+    - default: 1
+      name: Hdilation
+    data-spaces:
+    - name: Weights
+      projection:
+      - - - C
+      - - - M
+      - - - R
+      - - - S
+    - name: Inputs
+      projection:
+      - - - N
+      - - - C
+      - - - R
+          - Wdilation
+        - - P
+          - Wstride
+      - - - S
+          - Hdilation
+        - - Q
+          - Hstride
+    - name: Outputs
+      projection:
+      - - - N
+      - - - M
+      - - - Q
+      - - - P
+      read-write: true
+    dimensions:
+    - C
+    - M
+    - R
+    - S
+    - N
+    - P
+    - Q
+    name: CNN-Layer

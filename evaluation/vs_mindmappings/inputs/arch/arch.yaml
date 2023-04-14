@@ -1,0 +1,96 @@
+architecture:
+  version: 0.2
+  
+  subtree:
+    - name: System
+      local:
+        - name: DRAM
+          class: DRAM
+          attributes:
+            width: 64
+            word-bits: 16
+            block-size: 4
+            instances: 1
+      subtree:
+        - name: Accelerator
+          attributes:
+            technology: 40nm
+          local:
+            - name: InputBuffer
+              class: SRAM
+              attributes:
+                depth: 49152
+                width: 64
+                block-size: 4
+                word-bits: 16
+                read_bandwidth: 16
+                write_bandwidth: 16
+                vector-access-energy: 8.8
+                instances: 1
+            - name: WeightBuffer
+              class: SRAM
+              attributes:
+                depth: 12288
+                width: 64
+                block-size: 4
+                word-bits: 16
+                read_bandwidth: 16
+                write_bandwidth: 16
+                vector-access-energy: 8.8
+                instances: 1
+            - name: PsumBuffer
+              class: SRAM
+              attributes:
+                depth: 4096
+                width: 64
+                block-size: 4
+                word-bits: 16
+                read_bandwidth: 16
+                write_bandwidth: 16
+                vector-access-energy: 8.8
+                instances: 1
+          subtree:
+            - name: PE[0..255]
+              local:
+                - name: PsumRegFile
+                  class: SRAM
+                  attributes:
+                    depth: 10240
+                    width: 16
+                    block-size: 1
+                    word-bits: 16
+                    #meshX: 16
+                    read_bandwidth: 2
+                    write_bandwidth: 2
+                    vector-access-energy: 2.24
+                    instances: 256
+                - name: WeightRegFile
+                  class: SRAM
+                  attributes:
+                    depth: 14336
+                    width: 16
+                    block-size: 1
+                    word-bits: 16
+                    #meshX: 16
+                    read_bandwidth: 2
+                    write_bandwidth: 2
+                    vector-access-energy: 2.24
+                    instances: 256
+                - name: InputRegFile
+                  class: SRAM
+                  attributes:
+                    depth: 8192
+                    width: 16
+                    block-size: 1
+                    word-bits: 16
+                    #meshX: 16
+                    read_bandwidth: 2
+                    write_bandwidth: 2
+                    vector-access-energy: 2.24
+                    instances: 256
+                - name: MACs
+                  class: intmac
+                  attributes:
+                    datawidth: 16
+                    instances: 256
+

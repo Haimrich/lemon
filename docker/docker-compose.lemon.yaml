@@ -1,0 +1,15 @@
+version: '3.8'
+
+services:
+  lemon:
+    image: lemon:latest
+    build: 
+      context: ..
+      dockerfile: docker/Dockerfile.lemon
+    volumes:
+      - ..:/app/
+      - ./put-gurobi-license-here/gurobi.lic:/opt/gurobi/gurobi.lic:ro
+    stdin_open: true
+    tty: true
+    command: bash -c "cd /app && pip install -e . --quiet && bash"
+  
