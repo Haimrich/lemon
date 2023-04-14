@@ -1,0 +1,79 @@
+mapping:
+- factors: R=1 S=1 P=1 Q=1 C=1 K=1 N=1
+  permutation: RSPQCKN
+  target: PEWeightRegs
+  type: temporal
+- factors: R=1 S=1 P=1 Q=1 C=1 K=4 N=1
+  permutation: RSPQCKN
+  target: PEAccuBuffer
+  type: spatial
+- factors: R=1 S=1 P=1 Q=1 C=1 K=16 N=1
+  permutation: RSPQCKN
+  target: PEAccuBuffer
+  type: temporal
+- factors: R=1 S=1 P=1 Q=1 C=1 K=1 N=1
+  permutation: RSPQCKN
+  target: PEWeightBuffer
+  type: temporal
+- factors: R=1 S=1 P=1 Q=1 C=16 K=1 N=1
+  permutation: RSPQCKN
+  target: PEInputBuffer
+  type: spatial
+- factors: R=1 S=1 P=1 Q=1 C=1 K=1 N=1
+  permutation: RSPQCKN
+  target: PEInputBuffer
+  type: temporal
+- factors: R=1 S=1 P=1 Q=1 C=3 K=18 N=1
+  permutation: RSPQCKN
+  target: GlobalBuffer
+  type: spatial
+- factors: R=1 S=1 P=1 Q=1 C=1 K=1 N=1
+  permutation: RSPQCKN
+  target: GlobalBuffer
+  type: temporal
+- factors: R=1 S=1 P=1 Q=1 C=1 K=1 N=1
+  permutation: RSPQCKN
+  target: DRAM
+  type: temporal
+- bypass:
+  - Inputs
+  - Outputs
+  keep:
+  - Weights
+  target: PEWeightRegs
+  type: bypass
+- bypass:
+  - Weights
+  - Inputs
+  keep:
+  - Outputs
+  target: PEAccuBuffer
+  type: bypass
+- bypass:
+  - Inputs
+  - Outputs
+  keep:
+  - Weights
+  target: PEWeightBuffer
+  type: bypass
+- bypass:
+  - Weights
+  - Outputs
+  keep:
+  - Inputs
+  target: PEInputBuffer
+  type: bypass
+- bypass:
+  - Weights
+  keep:
+  - Inputs
+  - Outputs
+  target: GlobalBuffer
+  type: bypass
+- bypass: []
+  keep:
+  - Weights
+  - Inputs
+  - Outputs
+  target: DRAM
+  type: bypass

@@ -1,0 +1,42 @@
+mapping:
+  - target: LocalBuffer
+    type: datatype
+    keep:
+      - Weights
+      - Inputs
+      - Outputs
+    bypass:
+      []
+  - target: GlobalBuffer
+    type: datatype
+    keep:
+      - Weights
+      - Inputs
+      - Outputs
+    bypass:
+      []
+  - target: DRAM
+    type: datatype
+    keep:
+      - Weights
+      - Inputs
+      - Outputs
+    bypass:
+      []
+  - target: LocalBuffer
+    type: temporal
+    factors: C3 M1 R11 S11 N1 P1 Q55
+    permutation: CRSQMNP
+  - target: GlobalBuffer
+    type: spatial
+    factors: C1 M64 R1 S1 N1 P1 Q1
+    permutation: MCRSNPQ
+    split: 1
+  - target: GlobalBuffer
+    type: temporal
+    factors: C1 M1 R1 S1 N1 P1 Q1
+    permutation: CMRSNPQ
+  - target: DRAM
+    type: temporal
+    factors: C1 M1 R1 S1 N1 P55 Q1
+    permutation: PCMRSNQ

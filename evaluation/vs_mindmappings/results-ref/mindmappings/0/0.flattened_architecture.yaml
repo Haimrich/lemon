@@ -1,0 +1,114 @@
+architecture:
+  version: 0.3
+  local:
+  - name: System.Accelerator.PE[0..256].PsumRegFile
+    class: SRAM
+    attributes:
+      block-size: 1
+      depth: 16384
+      latency: 5ns
+      n_banks: 1
+      n_rd_ports: 0
+      n_rdwr_ports: 1
+      n_wr_ports: 0
+      read_bandwidth: 2
+      technology: 40nm
+      vector-access-energy: 2.24
+      width: 16
+      word-bits: 16
+      write_bandwidth: 2
+  - name: System.Accelerator.PE[0..256].WeightRegFile
+    class: SRAM
+    attributes:
+      block-size: 1
+      depth: 12288
+      latency: 5ns
+      n_banks: 1
+      n_rd_ports: 0
+      n_rdwr_ports: 1
+      n_wr_ports: 0
+      read_bandwidth: 2
+      technology: 40nm
+      vector-access-energy: 2.24
+      width: 16
+      word-bits: 16
+      write_bandwidth: 2
+  - name: System.Accelerator.PE[0..256].InputRegFile
+    class: SRAM
+    attributes:
+      block-size: 1
+      depth: 4096
+      latency: 5ns
+      n_banks: 1
+      n_rd_ports: 0
+      n_rdwr_ports: 1
+      n_wr_ports: 0
+      read_bandwidth: 2
+      technology: 40nm
+      vector-access-energy: 2.24
+      width: 16
+      word-bits: 16
+      write_bandwidth: 2
+  - name: System.Accelerator.PE[0..256].MACs
+    class: intmac
+    attributes:
+      datawidth: 16
+      latency: 5ns
+      num_pipeline_stages: 2
+      technology: 40nm
+  - name: System.Accelerator.InputBuffer
+    class: SRAM
+    attributes:
+      block-size: 4
+      depth: 8192
+      latency: 5ns
+      n_banks: 1
+      n_rd_ports: 0
+      n_rdwr_ports: 1
+      n_wr_ports: 0
+      read_bandwidth: 16
+      technology: 40nm
+      vector-access-energy: 8.8
+      width: 64
+      word-bits: 16
+      write_bandwidth: 16
+  - name: System.Accelerator.WeightBuffer
+    class: SRAM
+    attributes:
+      block-size: 4
+      depth: 8192
+      latency: 5ns
+      n_banks: 1
+      n_rd_ports: 0
+      n_rdwr_ports: 1
+      n_wr_ports: 0
+      read_bandwidth: 16
+      technology: 40nm
+      vector-access-energy: 8.8
+      width: 64
+      word-bits: 16
+      write_bandwidth: 16
+  - name: System.Accelerator.PsumBuffer
+    class: SRAM
+    attributes:
+      block-size: 4
+      depth: 49152
+      latency: 5ns
+      n_banks: 1
+      n_rd_ports: 0
+      n_rdwr_ports: 1
+      n_wr_ports: 0
+      read_bandwidth: 16
+      technology: 40nm
+      vector-access-energy: 8.8
+      width: 64
+      word-bits: 16
+      write_bandwidth: 16
+  - name: System.DRAM
+    class: DRAM
+    attributes:
+      block-size: 4
+      technology: 65nm
+      type: LPDDR4
+      width: 64
+      word-bits: 16

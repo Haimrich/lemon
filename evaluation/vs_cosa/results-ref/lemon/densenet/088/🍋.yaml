@@ -1,0 +1,72 @@
+mapping:
+- bypass:
+  - Inputs
+  - Outputs
+  keep:
+  - Weights
+  target: PEWeightRegs
+  type: datatype
+- bypass:
+  - Weights
+  - Inputs
+  keep:
+  - Outputs
+  target: PEAccuBuffer
+  type: datatype
+- bypass:
+  - Inputs
+  - Outputs
+  keep:
+  - Weights
+  target: PEWeightBuffer
+  type: datatype
+- bypass:
+  - Weights
+  - Outputs
+  keep:
+  - Inputs
+  target: PEInputBuffer
+  type: datatype
+- bypass:
+  - Weights
+  keep:
+  - Inputs
+  - Outputs
+  target: GlobalBuffer
+  type: datatype
+- factors: R=1 S=1 P=7 Q=7 C=1 K=1 N=1
+  permutation: PQRSCKN
+  target: PEWeightRegs
+  type: temporal
+- factors: R=1 S=1 P=1 Q=1 C=1 K=1 N=1
+  permutation: RSPQCKN
+  target: PEAccuBuffer
+  type: temporal
+- factors: R=1 S=1 P=1 Q=1 C=10 K=1 N=1
+  permutation: CRSPQKN
+  target: PEWeightBuffer
+  type: temporal
+- factors: R=1 S=1 P=1 Q=1 C=1 K=1 N=1
+  permutation: RSPQCKN
+  target: PEInputBuffer
+  type: temporal
+- factors: R=1 S=1 P=1 Q=1 C=1 K=1 N=1
+  permutation: RSPQCKN
+  target: GlobalBuffer
+  type: temporal
+- factors: R=1 S=1 P=1 Q=1 C=1 K=4 N=1
+  permutation: KRSPQCN
+  target: DRAM
+  type: temporal
+- factors: R=1 S=1 P=1 Q=1 C=4 K=1 N=1
+  permutation: RSPQCKN
+  target: PEAccuBuffer
+  type: spatial
+- factors: R=1 S=1 P=1 Q=1 C=1 K=16 N=1
+  permutation: RSPQCKN
+  target: PEInputBuffer
+  type: spatial
+- factors: R=1 S=1 P=1 Q=1 C=28 K=2 N=1
+  permutation: RSPQCKN
+  target: GlobalBuffer
+  type: spatial

@@ -1,0 +1,42 @@
+mapping:
+- bypass: []
+  keep:
+  - Inputs
+  - Weights
+  - Outputs
+  target: LocalBuffer
+  type: bypass
+- bypass: []
+  keep:
+  - Inputs
+  - Weights
+  - Outputs
+  target: GlobalBuffer
+  type: bypass
+- bypass: []
+  keep:
+  - Inputs
+  - Weights
+  - Outputs
+  target: DRAM
+  type: bypass
+- factors: R=11 S=11 P=11 Q=1 C=1 K=1 N=1
+  permutation: QKRPS
+  target: LocalBuffer
+  type: temporal
+- factors: R=1 S=1 P=5 Q=1 C=1 K=1 N=1
+  permutation: PC
+  target: GlobalBuffer
+  type: temporal
+- factors: R=1 S=1 P=1 Q=11 C=1 K=1 N=1
+  permutation: CKQ
+  target: DRAM
+  type: temporal
+- factors: R=1 S=1 P=1 Q=5 C=3 K=1 N=1
+  permutation: RSPQCKN
+  target: LocalBuffer
+  type: spatial
+- factors: R=1 S=1 P=1 Q=1 C=1 K=64 N=1
+  permutation: RSPQCKN
+  target: GlobalBuffer
+  type: spatial

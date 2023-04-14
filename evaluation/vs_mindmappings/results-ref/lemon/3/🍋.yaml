@@ -1,0 +1,75 @@
+mapping:
+- bypass:
+  - Inputs
+  - Weights
+  keep:
+  - Outputs
+  target: PsumRegFile
+  type: bypass
+- bypass:
+  - Inputs
+  - Outputs
+  keep:
+  - Weights
+  target: WeightRegFile
+  type: bypass
+- bypass:
+  - Weights
+  - Outputs
+  keep:
+  - Inputs
+  target: InputRegFile
+  type: bypass
+- bypass:
+  - Inputs
+  - Weights
+  keep:
+  - Outputs
+  target: PsumBuffer
+  type: bypass
+- bypass:
+  - Inputs
+  - Outputs
+  keep:
+  - Weights
+  target: WeightBuffer
+  type: bypass
+- bypass:
+  - Weights
+  - Outputs
+  keep:
+  - Inputs
+  target: InputBuffer
+  type: bypass
+- factors: R=3 S=3 P=13 Q=13 C=24 K=1 N=1
+  permutation: PSQCRKN
+  target: InputRegFile
+  type: temporal
+- factors: R=1 S=1 P=1 Q=1 C=1 K=1 N=1
+  permutation: RSPQCKN
+  target: WeightRegFile
+  type: temporal
+- factors: R=1 S=1 P=1 Q=1 C=1 K=1 N=1
+  permutation: RSPQCKN
+  target: PsumRegFile
+  type: temporal
+- factors: R=1 S=1 P=1 Q=1 C=1 K=1 N=1
+  permutation: RSPQCKN
+  target: PsumBuffer
+  type: temporal
+- factors: R=1 S=1 P=1 Q=1 C=1 K=1 N=1
+  permutation: RSPQCKN
+  target: WeightBuffer
+  type: temporal
+- factors: R=1 S=1 P=1 Q=1 C=1 K=1 N=1
+  permutation: RSPQCKN
+  target: InputBuffer
+  type: temporal
+- factors: R=1 S=1 P=1 Q=1 C=4 K=48 N=1
+  permutation: KCRSPQN
+  target: DRAM
+  type: temporal
+- factors: R=1 S=1 P=1 Q=1 C=4 K=8 N=8
+  permutation: RSPQCKN
+  target: PsumBuffer
+  type: spatial

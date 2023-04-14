@@ -1,0 +1,28 @@
+
+DRAM [ Weights:9600 (9600) Inputs:480 (480) Outputs:20 (20) ] 
+-------------------------------------------------------------
+| for N in [0:1)
+
+GlobalBuffer [ Inputs:480 (480) Outputs:20 (20) ] 
+-------------------------------------------------
+|   for N in [0:1)
+|     for C in [0:60) (Spatial-X)
+
+PEInputBuffer [ Inputs:8 (8) ] 
+------------------------------
+|       for K in [0:2)
+|         for K in [0:10) (Spatial-X)
+
+PEWeightBuffer [ Weights:8 (8) ] 
+--------------------------------
+|           for N in [0:1)
+
+PEAccuBuffer [ Outputs:1 (1) ] 
+------------------------------
+|             for C in [0:2)
+|               for C in [0:4) (Spatial-X)
+
+PEWeightRegs [ Weights:1 (1) ] 
+------------------------------
+|                 for N in [0:1)
+

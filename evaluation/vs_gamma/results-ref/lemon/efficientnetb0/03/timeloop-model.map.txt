@@ -1,0 +1,18 @@
+
+MainMemory [ Weights:512 (512) Inputs:401408 (401408) Outputs:200704 (200704) ] 
+-------------------------------------------------------------------------------
+| for Q in [0:7)
+|   for P in [0:7)
+
+GlobalBuffer [ Weights:512 (512) Inputs:8192 (8192) Outputs:4096 (4096) ] 
+-------------------------------------------------------------------------
+|     for K in [0:8)
+|       for Q in [0:16) (Spatial-X)
+|         for P in [0:16) (Spatial-X)
+
+RegisterFile [ Weights:64 (64) Inputs:32 (32) Outputs:2 (2) ] 
+-------------------------------------------------------------
+|           for C in [0:16)
+|             for K in [0:2) (Spatial-X)
+|               for C in [0:2) (Spatial-X)
+
